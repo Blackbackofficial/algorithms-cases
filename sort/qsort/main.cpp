@@ -25,16 +25,16 @@ void quicksort(int *mas, int first, int last)
 }
 
 int main() {
-    int *A=new int[n];
+    int n=9;
+    int A[n];
     int first, last;
-    int n=7;
     cout<<"Исходный массив: ";
     for (int i=0; i<n; i++)
     {
         A[i]=rand()%100;
         cout<<A[i]<<" ";
     }
-    first=0; last=n-1;
+    first = 0; last = sizeof(A)/sizeof(A[0]);
     quicksort(A, first, last);
     cout<<endl<<"Результирующий массив: ";
     for (int i=0; i<n; i++) cout<<A[i]<<" ";
