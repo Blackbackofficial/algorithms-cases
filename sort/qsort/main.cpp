@@ -35,7 +35,7 @@ int main() {
         cout<<A[i]<<" ";
     }
     first = 0; last = sizeof(A)/sizeof(A[0]);
-    quicksort(A, first, last);
+    quicksort(&A[0], first, last);
     cout<<endl<<"Результирующий массив: ";
     for (int i=0; i<n; i++) cout<<A[i]<<" ";
     return 0;
