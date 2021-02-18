@@ -4,9 +4,10 @@ using namespace std;
 
 void quicksort(int *mas, int first, int last)
 {
+    *mas
     int mid, count;
     int f=first, l=last;
-    mid=mas[(f+l) / 2]; //вычисление опорного элемента
+    mid= mas[(f+l) / 2]; //вычисление опорного элемента
     do
     {
         while (mas[f] < mid) f++;
@@ -35,7 +36,7 @@ int main() {
         cout<<A[i]<<" ";
     }
     first = 0; last = sizeof(A)/sizeof(A[0]);
-    quicksort(&A[0], first, last);
+    quicksort(A+2, first, last);
     cout<<endl<<"Результирующий массив: ";
     for (int i=0; i<n; i++) cout<<A[i]<<" ";
     return 0;

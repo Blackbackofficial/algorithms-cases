@@ -17,7 +17,6 @@ public:
         int *tmp;
         tmp = stack;
         stack = new int[count + 1];
-        int i = this->count;
 
         for (int i = 0; i < count; i++)
             stack[i] = tmp[i];
@@ -32,8 +31,14 @@ public:
         if (count == 0)
             return 0;
         count--;
-//        delete stack[count];
         return stack[count];
+    }
+
+    int Head() {
+        if (count ==0)
+            cout << "Is empty\n";
+        else
+            return stack[count - 1];
     }
 
     void Print() {
@@ -57,6 +62,7 @@ public:
 
 int main() {
     Stack st;
+    cout << st.Head();
     st.Print();
     st.Push(45);
     st.Push(12);
@@ -65,5 +71,6 @@ int main() {
     cout << st.Pop();
     st.Push(78);
     st.Print();
+    cout << st.Head();
     return 0;
 }
