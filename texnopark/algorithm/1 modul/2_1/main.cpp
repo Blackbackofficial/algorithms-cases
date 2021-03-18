@@ -23,9 +23,9 @@ int bin_search(const int * mass_A, int left, int right, int value_B) {
         return left;
     while (left < right) {
         int mid = left + (right - left) / 2;
-        if (mass_A[mid] > value_B) {
+        if (mass_A[mid] > value_B)
             right = mid;
-        } else
+        else
             left = mid + 1;
     }
     if (right > 1 && mass_A[right - 1] == value_B)
@@ -37,16 +37,14 @@ int main() {
     int size_n, size_m;
     std::cin >> size_n;
     std::cin >> size_m;
-//    assert(size_n > 0 && size_m > 0 && size_n <= 10000 && size_m <= 10000);
+    assert(size_n > 0 && size_m > 0 && size_n <= 10000 && size_m <= 10000);
     int * mass_A = new int[size_n];
     int * mass_B = new int[size_m];
 
-    for (int k = 0; k < size_n; k++) {
+    for (int k = 0; k < size_n; k++)
         std::cin >> mass_A[k];
-    }
-    for (int i = 0; i < size_m; i++) {
+    for (int i = 0; i < size_m; i++)
         std::cin >> mass_B[i];
-    }
 
     for (int i = 0; i < size_m; i++) {
         int pos_first = exp_search(mass_A, mass_B[i], size_n-1);
