@@ -6,8 +6,12 @@
 #include <cstdlib>
 #include <ctime>
 
-template <typename T>
-int partition(T * mass, int left, int right)
+struct cmp {
+    bool operator()(const int& left, const int& right)  {return left < right;}
+};
+
+template <typename T, class CMP>
+int partition(T * mass, int left, int right, CMP cmp)
 {
     int pivot = left+ rand() % (right-left);
     if (right - left <= 1)
@@ -16,7 +20,7 @@ int partition(T * mass, int left, int right)
     pivot = mass[right - 1];
     int i = left, j = right - 1;
     while (i <= j) {
-        while (mass[i] < pivot)
+        while (cmp(mass[i], pivot))
             i++;
         while (j >= 0 && mass[j] >= pivot)
             j--;
@@ -27,11 +31,11 @@ int partition(T * mass, int left, int right)
     return i;
 }
 
-template<typename T>
-void find_k_static(T * mass, int n, int k) {
+template<typename T, class CMP>
+void find_k_static(T * mass, int n, int k, CMP cmp) {
     int left = 0, right = n;
     while(left < right) {
-        int pos = partition(mass, left, right);
+        int pos = partition(mass, left, right, cmp);
         if (pos > k) {
             right = pos;
         } else if (pos < k) {
@@ -51,10 +55,9 @@ int main() {
     for (int i = 0; i < n; i++)
         std::cin >> mass[i];
 
-    find_k_static(mass, n, k);
+    find_k_static(mass, n, k, cmp());
     std::cout << mass[k];
 
     delete[] mass;
     return 0;
 }
-
