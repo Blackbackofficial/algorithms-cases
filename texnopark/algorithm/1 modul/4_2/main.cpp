@@ -8,11 +8,12 @@
  */
 
 #include <iostream>
+#define START 2
 struct cmp {
     bool operator()(const int& left, const int& right) {return left < right;}
 };
 
-template<typename T, class CMP>
+template<class CMP>
 class HEAP {
 public:
     int heap_size;
@@ -21,7 +22,7 @@ public:
     explicit HEAP(int n = 0, CMP comp = CMP()) {
         cmp = comp;
         heap_size = n;
-        size_duo = heap_size;
+        size_duo = heap_size*2;
         heapMass = nullptr;
     }
 
@@ -77,14 +78,14 @@ private:
         }
     }
 
-    void newSizeDuo(int size) {
-        size_duo = 1;
-        while (size_duo < size)
-            size_duo *= 2;
-    }
-
     void newSize() {
-        newSizeDuo(heap_size);
+        if (heapMass == nullptr) {
+            heapMass = new int[START];
+            heap_size = 0;
+            size_duo = START;
+            return;
+        }
+        size_duo = heap_size << 1;
         int * newMass = new int[size_duo];
 
         for (int i = 0; i < heap_size; i++)
@@ -94,36 +95,34 @@ private:
     }
 };
 
-template<typename T, class CMP>
-void summing(HEAP<T, CMP> * heap) {
-    int computeTime = 0;
-    if (heap == nullptr) {
-        std::cout << computeTime;
+template<class CMP>
+void summing(HEAP<CMP> * heap, int * computeTime) {
+    if (heap == nullptr)
         return;
-    }
     if (heap->heap_size == 1)
-        computeTime = heap->ExtractMin();
+        *computeTime = heap->ExtractMin();
     else {
         while (heap->heap_size > 1) {
             int last = heap->ExtractMin();
             int prelast = heap->ExtractMin();
-            computeTime += last + prelast;
+            *computeTime += last + prelast;
             heap->Insert(prelast + last);
         }
     }
-    if (computeTime < 0) // у нас натуральное число должно быть
-        computeTime = computeTime * -1;
-    std::cout << computeTime;
+    if (*computeTime < 0) // у нас натуральное число должно быть
+        *computeTime = *computeTime * -1;
 }
 
 int main() {
     int n, element;
     std::cin >> n;
-    HEAP<class T, cmp> heap;
+    HEAP<cmp> heap;
     for (int i = 0; i < n; i++) {
         std::cin >> element;
         heap.Insert(element);
     }
-    summing(&heap);
+    int computeTime = 0;
+    summing(&heap, &computeTime);
+    std::cout << computeTime;
     return 0;
 }
