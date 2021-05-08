@@ -14,6 +14,19 @@
 
 using namespace std;
 
+typedef unsigned char byte;
+#define interface struct
+
+interface IInputStream {
+    // Возвращает false, если поток закончился
+    virtual bool Read(byte& value) = 0;
+};
+
+interface IOutputStream {
+    virtual void Write(byte value) = 0;
+};
+
+
 struct Node {
     char letter;
     int frequency;
