@@ -5,87 +5,106 @@
 // Выведите элементы в порядке level-order (по слоям, “в ширину”).
 
 #include <iostream>
-#include <vector>
+#include <memory>
+#include <queue>
 #include <stack>
+#include <functional>
 
 using namespace std;
 
+struct Node {
+    explicit Node(const int &val) : value(val) {}
+    int value;
+    shared_ptr<Node> left;
+    shared_ptr<Node> right; // переписал как у вас в примере на фотке просто так потренироваться
+
+//    ~Node()  {
+//        cout << "~Node" << endl;
+//    }
+};
+
 struct cmp {
-    bool operator()(const int& left, const int& right) {return left <= right;}
+    bool operator()(const int &left, const int &right) {return left <= right;}
 };
 
 template<class CMP>
 class BinaryTree {
 public:
     CMP cmp;
-    int root;
-    explicit BinaryTree(int value, CMP comp = CMP()) {
-        root = value;
+    shared_ptr<Node> root;
+    explicit BinaryTree(CMP comp = CMP()) {
         cmp = comp;
-        left = nullptr;
-        right = nullptr;
     }
 
-    ~BinaryTree() = default;
-
-    void Insert(int value) {
-        BinaryTree * tree = this;
-
-        while (true) {
-            if (cmp(tree->root, value)) {
-                if (tree->left == nullptr) {
-                    tree->left = new BinaryTree(value);
-                    break;
-                } else
-                    tree = tree->left;
-            } else {
-                if (tree->right == nullptr) {
-                    tree->right = new BinaryTree(value);
-                    break;
-                } else
-                    tree = tree->right;
-            }
+    void Insert(const int &value) {
+        if (!root) {
+            root = make_shared<Node>(value);
+            return;
         }
+
+        shared_ptr<Node> tree(root);
+        while ((cmp(value, tree->value) && tree->left) || (!cmp(value, tree->value) && tree->right)) {
+            if (cmp(value, tree->value))
+                tree = tree->left;
+            else
+                tree = tree->right;
+        }
+        if (cmp(value, tree->value))
+            tree->left = make_shared<Node>(value);
+        else
+            tree->right = make_shared<Node>(value);
     }
 
-    void TraverseBFS() {
-        deque <BinaryTree*> currentBFS;
-        deque <int> endBFS;
+    void PrintBFS(function<void(const int &) > func) {
+        return TraverseBFS([&func](const shared_ptr<Node> &node) {
+            func(node->value);
+        });
+    }
 
-        currentBFS.push_back(this);
-
-        while (!currentBFS.empty()) {
-            BinaryTree * current = currentBFS.front();
-
-            if (current->right)
-                currentBFS.push_back(current->right);
+    ~BinaryTree() {
+        stack<shared_ptr<Node>> nodes;
+        TraverseBFS([&nodes](const shared_ptr<Node> &node) {
+            nodes.push(node);
+        });
+        while (!nodes.empty()) {
+            auto current = nodes.top();
             if (current->left)
-                currentBFS.push_back(current->left);
-
-            endBFS.push_back(current->root);
-            currentBFS.pop_front();
+                current->left = nullptr;
+            if (current->right)
+                current->right = nullptr;
+            nodes.pop();
         }
-
-        for (int i : endBFS)
-            cout << i << " ";
     }
 
 private:
-    BinaryTree * left;
-    BinaryTree * right;
+    void TraverseBFS(const function<void(shared_ptr<Node>)> &func) {
+        if (!root)
+            return;
+
+        queue<shared_ptr<Node>> nodes;
+        nodes.push(root);
+        while (!nodes.empty()) {
+            shared_ptr<Node> currentNode = nodes.front();
+            nodes.pop();
+            func(currentNode);
+            if (currentNode->left)
+                nodes.push(currentNode->left);
+            if (currentNode->right)
+                nodes.push(currentNode->right);
+        }
+    }
 };
 
 int main() {
     int size, value;
     cin >> size;
-    cin >> value;
-    BinaryTree<cmp> tree(value);
-
-    for (int i = 0; i < size - 1; i++) {
+    BinaryTree<cmp> tree;
+    for (int i = 0; i < size; i++) {
         cin >> value;
         tree.Insert(value);
     }
-
-    tree.TraverseBFS();
+    tree.PrintBFS([](const int &value) {
+        cout << value << " ";
+    });
     return 0;
 }
