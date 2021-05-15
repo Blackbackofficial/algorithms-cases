@@ -71,6 +71,7 @@ int main() {
     cout << st.Pop();
     st.Push(78);
     st.Print();
+    st.Print();
     cout << st.Head();
     return 0;
 }
