@@ -67,6 +67,7 @@ int main() {
     st.Push(45);
     st.Push(12);
     st.Push(89);
+    st.Push(89);
     st.Print();
     cout << st.Pop();
     st.Push(78);
