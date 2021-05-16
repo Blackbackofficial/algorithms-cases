@@ -43,7 +43,7 @@ public:
 
     int Control(std::string &value, size_t volume);
 
-    HashTable &operator = (HashTable& Nhash) {
+    HashTable const &operator = (HashTable& Nhash) {
         if (this == &Nhash)
             return *this;
 
