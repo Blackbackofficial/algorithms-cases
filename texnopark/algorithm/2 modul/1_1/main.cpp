@@ -11,14 +11,11 @@
 #include <iostream>
 #include <cmath>
 
-#define NOTFOUND -1
-#define START 7
-
 struct MyHash {
     size_t operator() (const std::string* str, int m) {
         int hash = 0;
         for (char i : *str)
-            hash = (hash * START + i) % m ;
+            hash = (hash * 7 + i) % m ;
         return hash;
     }
 };
@@ -65,21 +62,21 @@ int HashTable<Hash>::Control(std::string &value, size_t volume) {
 
     while (structure[next] != "EMPTY") {
         if (next == Nhash)
-            return NOTFOUND;
+            return -1;
         else if (structure[next] == value)
             return next;
 
         volume++;
         next = (Nhash +  3 * volume + 8 * (int) pow(volume, 2)) % Msize;
     }
-    return NOTFOUND;
+    return -1;
 }
 
 template<class Hash>
 bool HashTable<Hash>::Delete(std::string str) {
     int control = Control(str, 0);
 
-    if(control == NOTFOUND)
+    if(control == -1)
         return false;
 
     structure[control] = "DELETE";
@@ -91,7 +88,7 @@ template<class Hash>
 bool HashTable<Hash>::Insert(std::string value, size_t volume) {
     int control = Control( value, 0);
 
-    if (control != NOTFOUND)
+    if (control != -1)
         return false;
 
     int Nhash = hash(&value, Msize);
@@ -127,12 +124,12 @@ bool parser(char sign, std::string &text, HashTable<MyHash> &hash) {
     else if (sign == '-')
         return hash.Delete(text);
     else if (sign == '?')
-        return hash.Control(text, 0) != NOTFOUND;
+        return hash.Control(text, 0) != -1;
     return false;
 }
 
 int main() {
-    HashTable<MyHash> hash(START + 1);
+    HashTable<MyHash> hash( 8);
     char sign;
     std::string text;
 
